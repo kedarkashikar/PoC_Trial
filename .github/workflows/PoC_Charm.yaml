@@ -32,6 +32,7 @@ on:
 jobs:
   DEV:
     runs-on: ubuntu-latest
+    environment: 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
