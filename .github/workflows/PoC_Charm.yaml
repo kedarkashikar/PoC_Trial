@@ -30,9 +30,9 @@ on:
   #     - 'ValueMapping Backup/**.zip'
   #     - 'iFlows Backup/**.zip'
 jobs:
-  DEV:
+  Development:
     runs-on: ubuntu-latest
-    environment: 
+    environment: Development
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -96,7 +96,12 @@ jobs:
           else
             echo "API response: $API_RESPONSE"
           fi
-         
           
-
-          
+  Quality:
+      runs-on: ubuntu-latest
+      environment: Quality
+      steps:
+        - name: hello world
+          run: echo "Hello World"
+          shell: bash
+  
