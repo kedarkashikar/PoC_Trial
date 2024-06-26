@@ -98,6 +98,7 @@ jobs:
           fi
           
   Quality:
+      needs: Development
       runs-on: ubuntu-latest
       environment: Quality
       steps:
