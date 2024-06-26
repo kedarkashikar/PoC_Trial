@@ -1,1 +1,101 @@
+name: DevOps
 
+on:
+  workflow_dispatch:
+    inputs:
+      ArtifactType:
+        required: true
+        description: 'Integration/ValueMapping/ScriptCollection'
+      ArtifactName:
+        required: true
+      ArtifactID:
+        required: true
+      PackageName:
+        required: true
+      IsNewPackage:
+        required: true
+        description: 'Is this new package? Yes/No'
+
+          # echo "ArtifactType = ${{ github.event.inputs.ArtifactType }}" >> $GITHUB_ENV
+          # echo "ArtifactName = ${{ github.event.inputs.ArtifactName }}" >> $GITHUB_ENV
+          # echo "ArtifactID = ${{ github.event.inputs.ArtifactID }}" >> $GITHUB_ENV
+          # echo "PackageName = ${{ github.event.inputs.PackageName }}" >> $GITHUB_ENV
+          # echo "IsNewPackage = ${{ github.event.inputs.IsNewPackage }}" >> $GITHUB_ENV
+      
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'Script Collections Backup/**.zip'
+  #     - 'ValueMapping Backup/**.zip'
+  #     - 'iFlows Backup/**.zip'
+jobs:
+  DEV:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Determine Repo Folder Path
+        run: |
+          if [ "${{ github.event.inputs.ArtifactType }}" == "Integration" ]; then
+            echo "RepoFolderPath=iFlows Backup" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.ArtifactType }}" == "ValueMapping" ]; then
+            echo "RepoFolderPath=ValueMapping Backup" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.ArtifactType }}" == "ScriptCollection" ]; then
+            echo "RepoFolderPath=Script Collections Backup" >> $GITHUB_ENV
+          else
+            echo "Unknown ArtifactType"
+            exit 1
+          fi
+
+      - name: Print Repo Folder Path
+        run: echo "RepoFolderPath is ${{ env.RepoFolderPath }}"
+        
+      - name: Get CPI Access Token
+        id: get-token
+        env:
+          CLIENT_ID: ${{ secrets.ROJODEMO_IFLOW_CLIENTID }}
+          CLIENT_SECRET: ${{ secrets.ROJODEMO_IFLOW_CLIENTSECRET }}
+        
+        run: |
+          TOKEN_RESPONSE=$(curl -s -X POST \
+            -d "grant_type=client_credentials" \
+            -d "client_id=$CLIENT_ID" \
+            -d "client_secret=$CLIENT_SECRET" \
+            https://rojo-demo-0i5fylx4.authentication.eu12.hana.ondemand.com/oauth/token)
+
+          ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
+
+          if [ -z "$ACCESS_TOKEN" ]; then
+            echo "Failed to get access token"
+            exit 1
+          fi
+
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+
+      - name: Call CPI Delta Upload iflow
+        env:
+          ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
+          REPO_PATH: ${{ env.RepoFolderPath }}
+        run: |
+          API_URL="https://rojo-demo-0i5fylx4.it-accd003-rt.cfapps.eu12.hana.ondemand.com/http/GitHubRepo/DeltaRelease"
+          RESPONSE=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $ACCESS_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"ArtifactID" : "${{ github.event.inputs.ArtifactID }}", "GitHub_FolderPath" : "${{ env.RepoFolderPath }}", "ArtifactType" : "${{ github.event.inputs.ArtifactType }}", "ArtifactName" : "${{ github.event.inputs.ArtifactName }}"}'  \
+          $API_URL)
+        
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+          API_RESPONSE=$(echo "$RESPONSE" | sed '$ d')
+        
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "API call failed with status: $HTTP_STATUS"
+            echo "Response: $API_RESPONSE"
+            exit 1
+          else
+            echo "API response: $API_RESPONSE"
+          fi
+         
+          
+
+          
