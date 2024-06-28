@@ -65,9 +65,12 @@ jobs:
           CLIENT_ID: ${{ secrets.ROJODEMO_APIHUB_CLIENTID }}
           CLIENT_SECRET: ${{ secrets.ROJODEMO_APIHUB_CLIENTSECRET }}
         run: |
-          echo "Fetching access token..."
-          ACCESS_TOKEN=$(curl -X POST -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&grant_type=client_credentials" https://rojo-demo-0i5fylx4.authentication.eu12.hana.ondemand.com/oauth/token | jq -r '.access_token')
-          echo "Access token: $ACCESS_TOKEN"
+          TOKEN_RESPONSE=$(curl -s -X POST \
+            -d "grant_type=client_credentials" \
+            -d "client_id=$CLIENT_ID" \
+            -d "client_secret=$CLIENT_SECRET" \
+            https://rojo-demo-0i5fylx4.authentication.eu12.hana.ondemand.com/oauth/token)
+
           ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
 
           if [ -z "$ACCESS_TOKEN" ]; then
