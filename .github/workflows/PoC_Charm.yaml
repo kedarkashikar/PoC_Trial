@@ -29,6 +29,9 @@ on:
   #     - 'Script Collections Backup/**.zip'
   #     - 'ValueMapping Backup/**.zip'
   #     - 'iFlows Backup/**.zip'
+env:
+  CPI_API_HOST: ${{ vars.CPI_API_HOST }}
+  
 jobs:
   Development:
     runs-on: ubuntu-latest
