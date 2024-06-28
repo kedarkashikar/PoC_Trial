@@ -65,6 +65,7 @@ jobs:
           CLIENT_ID: ${{ secrets.ROJODEMO_APIHUB_CLIENTID }}
           CLIENT_SECRET: ${{ secrets.ROJODEMO_APIHUB_CLIENTSECRET }}
         run: |
+          echo "Fetching access token..."
           TOKEN_RESPONSE=$(curl -s -X POST \
             -d "grant_type=client_credentials" \
             -d "client_id=$CLIENT_ID" \
