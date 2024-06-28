@@ -36,7 +36,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
+#------------Determine Repo folder based on type of Artifact-----------------------
       - name: Determine Repo Folder Path
         run: |
           if [ "${{ github.event.inputs.ArtifactType }}" == "Integration" ]; then
@@ -51,14 +52,17 @@ jobs:
           fi
 
       - name: Print Repo Folder Path
-        run: echo "RepoFolderPath is ${{ env.RepoFolderPath }}"
+        run: |
+          echo "RepoFolderPath is ${{ env.RepoFolderPath }}"
+          echo "CPI URL is ${{ vars.CPI_API_HOST }}"
         
+
+ #------------------Get CPI creds and download the zip------------------------       
       - name: Get CPI Access Token
         id: get-token
         env:
           CLIENT_ID: ${{ secrets.ROJODEMO_APIHUB_CLIENTID }}
           CLIENT_SECRET: ${{ secrets.ROJODEMO_APIHUB_CLIENTSECRET }}
-        
         run: |
           TOKEN_RESPONSE=$(curl -s -X POST \
             -d "grant_type=client_credentials" \
