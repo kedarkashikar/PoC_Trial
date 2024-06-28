@@ -85,11 +85,12 @@ jobs:
           ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
           REPO_PATH: ${{ env.RepoFolderPath }}
         run: |
-          API_URL="https://rojo-demo-0i5fylx4.it-accd003-rt.cfapps.eu12.hana.ondemand.com/http/GitHubRepo/DeltaRelease"
-          RESPONSE=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $ACCESS_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{"ArtifactID" : "${{ github.event.inputs.ArtifactID }}", "GitHub_FolderPath" : "${{ env.RepoFolderPath }}", "ArtifactType" : "${{ github.event.inputs.ArtifactType }}", "ArtifactName" : "${{ github.event.inputs.ArtifactName }}"}'  \
-          $API_URL)
+          API_URL="https://${{ vars.CPI_API_HOSTPORT }}/api/v1/${{ github.event.inputs.ArtifactType }}DesigntimeArtifacts(Id='${{ github.event.inputs.ArtifactID }}',Version='active')/$value"
+          curl -o ${{ env.RepoFolderPath }} -X GET "$API_URL" -H "Authorization: Bearer $ACCESS_TOKEN"
+          # RESPONSE=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $ACCESS_TOKEN" \
+          # -H "Content-Type: application/json" \
+          # -d '{"ArtifactID" : "${{ github.event.inputs.ArtifactID }}", "GitHub_FolderPath" : "${{ env.RepoFolderPath }}", "ArtifactType" : "${{ github.event.inputs.ArtifactType }}", "ArtifactName" : "${{ github.event.inputs.ArtifactName }}"}'  \
+          # $API_URL)
         
           HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
           API_RESPONSE=$(echo "$RESPONSE" | sed '$ d')
