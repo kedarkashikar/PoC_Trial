@@ -87,11 +87,9 @@ jobs:
           REPO_PATH: ${{ env.RepoFolderPath }}
         run: |
           API_URL="https://${{ vars.CPI_API_HOSTPORT }}/api/v1/${{ github.event.inputs.ArtifactType }}DesigntimeArtifacts(Id='${{ github.event.inputs.ArtifactID }}',Version='active')/$value"
-          curl -o ${{ env.RepoFolderPath }} -X GET "$API_URL" -H "Authorization: Bearer $ACCESS_TOKEN"
-          # RESPONSE=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $ACCESS_TOKEN" \
-          # -H "Content-Type: application/json" \
-          # -d '{"ArtifactID" : "${{ github.event.inputs.ArtifactID }}", "GitHub_FolderPath" : "${{ env.RepoFolderPath }}", "ArtifactType" : "${{ github.event.inputs.ArtifactType }}", "ArtifactName" : "${{ github.event.inputs.ArtifactName }}"}'  \
-          # $API_URL)
+          echo "Downloading zip file..."
+          echo "URL = $API_URL"
+          curl -H "Authorization: Bearer $ACCESS_TOKEN" -L $API_URL -o file.zip
         
           HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
           API_RESPONSE=$(echo "$RESPONSE" | sed '$ d')
