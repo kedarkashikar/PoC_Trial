@@ -105,7 +105,7 @@ jobs:
       - name: Upload files
         run: |
           echo "Uploading zip..."
-          rsync -av --progress file.zip/ ./iFlow Backup
+          rsync -av --progress file.zip/ ./iFlow Backup/
   Quality:
       needs: Development
       runs-on: ubuntu-latest
