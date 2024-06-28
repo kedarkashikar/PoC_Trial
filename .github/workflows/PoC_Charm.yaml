@@ -30,7 +30,7 @@ on:
   #     - 'ValueMapping Backup/**.zip'
   #     - 'iFlows Backup/**.zip'
 env:
-  CPI_API_HOST: ${{ vars.CPI_API_HOST }}
+  CPI_API_HOST: ${{ vars.CPI_API_HOSTPORT }}
   
 jobs:
   Development:
