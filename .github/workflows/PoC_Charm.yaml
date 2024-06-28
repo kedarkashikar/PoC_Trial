@@ -54,7 +54,7 @@ jobs:
       - name: Print Repo Folder Path
         run: |
           echo "RepoFolderPath is ${{ env.RepoFolderPath }}"
-          echo "CPI URL is ${{ vars.CPI_API_HOST }}"
+          echo "CPI URL is ${{ env.CPI_API_HOST }}"
         
 
  #------------------Get CPI creds and download the zip------------------------       
