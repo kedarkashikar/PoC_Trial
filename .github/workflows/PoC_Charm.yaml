@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
 
-          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN = $ACCESS_TOKEN"
 
       - name: Call CPI Delta Upload iflow
         env:
