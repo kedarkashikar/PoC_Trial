@@ -29,9 +29,7 @@ on:
   #     - 'Script Collections Backup/**.zip'
   #     - 'ValueMapping Backup/**.zip'
   #     - 'iFlows Backup/**.zip'
-env:
-  CPI_API_HOST: ${{ vars.CPI_API_HOSTPORT }}
-  
+
 jobs:
   Development:
     runs-on: ubuntu-latest
@@ -57,7 +55,7 @@ jobs:
       - name: Print Repo Folder Path
         run: |
           echo "RepoFolderPath is ${{ env.RepoFolderPath }}"
-          echo "CPI URL is ${{ env.CPI_API_HOST }}"
+          echo "CPI URL is ${{ vars.CPI_API_HOSTPORT }}"
         
 
  #------------------Get CPI creds and download the zip------------------------       
