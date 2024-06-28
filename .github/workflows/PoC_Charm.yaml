@@ -56,8 +56,8 @@ jobs:
       - name: Get CPI Access Token
         id: get-token
         env:
-          CLIENT_ID: ${{ secrets.ROJODEMO_IFLOW_CLIENTID }}
-          CLIENT_SECRET: ${{ secrets.ROJODEMO_IFLOW_CLIENTSECRET }}
+          CLIENT_ID: ${{ secrets.ROJODEMO_APIHUB_CLIENTID }}
+          CLIENT_SECRET: ${{ secrets.ROJODEMO_APIHUB_CLIENTSECRET }}
         
         run: |
           TOKEN_RESPONSE=$(curl -s -X POST \
