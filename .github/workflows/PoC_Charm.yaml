@@ -101,7 +101,7 @@ jobs:
             echo "Response: $API_RESPONSE"
             exit 1
           else
-            echo "API response: $API_RESPONSE"
+            echo "HTTP_STATUS: $HTTP_STATUS"
           fi
 
       - name: Upload files
